@@ -7,7 +7,7 @@ const bcryptjs = require('bcryptjs')
 const bodyParser = require('body-parser')
 const session = require('express-session')
 const usePassport = require('./config/passport')
-const passport = require('passport')
+// const passport = require('passport')
 const router = require('./routes/index')
 
 const app = express()
@@ -32,20 +32,33 @@ usePassport(app)
 
 
 
-app.post('/users/login', passport.authenticate('local', {
-  successRedirect: '/',
-  failureRedirect: '/users/login'
-}))
+// app.post('/users/login', passport.authenticate('local', {
+//   successRedirect: '/',
+//   failureRedirect: '/users/login'
+// }))
 
-app.get('/', (req, res) => {
-  return Todo.findAll({
-    raw: true,
-    nest: true
-  })
-    .then((todos) => { 
-      // console.log('todos', todos)
-      return res.render('index', { todos: todos }) })
-    .catch((error) => { return res.status(422).json(error) })
+// app.get('/', (req, res) => {
+//   return Todo.findAll({
+//     raw: true,
+//     nest: true
+//   })
+//     .then((todos) => { 
+//       // console.log('todos', todos)
+//       return res.render('index', { todos: todos }) })
+//     .catch((error) => { return res.status(422).json(error) })
+// })
+
+app.get('/todos/:id', (req, res) => {
+  const id = req.params.id
+  return Todo.findByPk(id)
+    .then(todo => res.render('detail', { todo: todo.toJSON() }))
+    .catch(error => console.log(error))
+})
+
+app.use(router)
+
+app.listen(PORT, () => {
+  console.log('server is enable~')
 })
 
 // app.get('/users/login', (req, res) => {
@@ -89,15 +102,3 @@ app.get('/', (req, res) => {
 //   res.send('logout')
 // })
 
-app.get('/todos/:id', (req, res) => {
-  const id = req.params.id
-  return Todo.findByPk(id)
-    .then(todo => res.render('detail', { todo: todo.toJSON() }))
-    .catch(error => console.log(error))
-})
-
-app.use(router)
-
-app.listen(PORT, () => {
-  console.log('server is enable~')
-})
