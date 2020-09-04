@@ -5,6 +5,7 @@ const Todo = db.Todo
 
 
 router.get('/', (req, res) => {
+  console.log('check x')
   return Todo.findAll({
     raw: true,
     nest: true
