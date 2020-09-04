@@ -5,6 +5,9 @@ const exphbs = require('express-handlebars')
 const methodOverride = require('method-override')
 const bcryptjs = require('bcryptjs')
 const bodyParser = require('body-parser')
+const session = require('express-session')
+const usePassport = require('./config/passport')
+const passport = require('passport')
 
 const app = express()
 app.engine('hbs', exphbs({ defaultLayout: "main", extname: "hbs" }))
@@ -18,13 +21,28 @@ const User = db.User
 
 const PORT = 3000
 
+
+app.use(session({
+  secret: 'ThisIsMySecret',
+  resave: false,
+  saveUninitialized: true
+}))
+usePassport(app)
+
+
+
+app.post('/users/login', passport.authenticate('local', {
+  successRedirect: '/',
+  failureRedirect: '/users/login'
+}))
+
 app.get('/', (req, res) => {
   return Todo.findAll({
     raw: true,
     nest: true
   })
     .then((todos) => { 
-      console.log('todos', todos)
+      // console.log('todos', todos)
       return res.render('index', { todos: todos }) })
     .catch((error) => { return res.status(422).json(error) })
 })
