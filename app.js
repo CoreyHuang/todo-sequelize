@@ -6,6 +6,7 @@ const bodyParser = require('body-parser')
 const session = require('express-session')
 const usePassport = require('./config/passport')
 const router = require('./routes/index')
+const useLocalStorage = require('./middleware/localStorage')
 const PORT = 3000
 const app = express()
 app.engine('hbs', exphbs({ defaultLayout: "main", extname: "hbs" }))
@@ -22,7 +23,7 @@ app.use(session({
   saveUninitialized: true
 }))
 usePassport(app)
-
+app.use(useLocalStorage)
 app.use(router)
 
 app.listen(PORT, () => {

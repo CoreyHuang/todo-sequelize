@@ -10,7 +10,7 @@ router.get('/', (req, res) => {
   return Todo.findAll({
     raw: true,
     nest: true,
-    where: { UserId}
+    where: { UserId }
   })
     .then((todos) => {
       // console.log('todos', todos)
