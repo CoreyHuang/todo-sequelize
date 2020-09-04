@@ -8,7 +8,8 @@ const User = db.User
 
 router.post('/login', passport.authenticate('local', {
   successRedirect: '/',
-  failureRedirect: '/users/login'
+  failureRedirect: '/users/login',
+  failureFlash: true,
 }))
 
 router.get('/login', (req, res) => {
@@ -23,21 +24,16 @@ router.post('/register', (req, res) => {
   const { name, email, password, confirmPassword } = req.body
   User.findOne({ where: { email } }).then(user => {
     if (user) {
-      console.log('User already exists')
       return res.render('register', {
-        name,
-        email,
-        password,
-        confirmPassword
+        name, email, password, confirmPassword,
+        message: "User already exists"
       })
     }
     return bcrypt
       .genSalt(10)
       .then(salt => bcrypt.hash(password, salt))
       .then(hash => User.create({
-        name,
-        email,
-        password: hash
+        name, email, password: hash
       }))
       .then(() => res.redirect('/'))
       .catch(err => console.log(err))

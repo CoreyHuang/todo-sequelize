@@ -9,6 +9,7 @@ const session = require('express-session')
 const usePassport = require('./config/passport')
 const router = require('./routes/index')
 const useLocalStorage = require('./middleware/localStorage')
+const flash = require('connect-flash')
 const PORT = process.env.PORT
 const app = express()
 app.engine('hbs', exphbs({ defaultLayout: "main", extname: "hbs" }))
@@ -24,6 +25,7 @@ app.use(session({
   resave: false,
   saveUninitialized: true
 }))
+app.use(flash())
 usePassport(app)
 app.use(useLocalStorage)
 app.use(router)
