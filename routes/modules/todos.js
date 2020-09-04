@@ -4,11 +4,29 @@ const db = require('../../models')
 const { where } = require('sequelize')
 const Todo = db.Todo
 
+
+router.get('/new', (req, res) => {
+  res.render('new')
+})
+
 router.get('/:id', (req, res) => {
   const id = req.params.id
-  return Todo.findByPk(id)
+  const UserId = req.user.id
+  //  Todo.findByPk(id)
+  Todo.findOne({ where: { id, UserId } })
     .then(todo => res.render('detail', { todo: todo.toJSON() }))
     .catch(error => console.log(error))
+})
+
+router.post('/', (req, res) => {
+  const UserId = req.user.id
+  const { name } = req.body
+  Todo.create({ name, UserId })
+  .then((data) => {
+    console.log('create data', data)
+    res.redirect('/')
+  })
+  .catch(err => console.log(err))
 })
 
 

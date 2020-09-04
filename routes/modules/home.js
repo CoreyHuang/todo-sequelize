@@ -5,10 +5,12 @@ const Todo = db.Todo
 
 
 router.get('/', (req, res) => {
+  const UserId = req.user.id
   console.log('check x')
   return Todo.findAll({
     raw: true,
-    nest: true
+    nest: true,
+    where: { UserId}
   })
     .then((todos) => {
       // console.log('todos', todos)
